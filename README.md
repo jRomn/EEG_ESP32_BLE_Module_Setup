@@ -48,8 +48,35 @@ The BLE setup follows a **three-layer structure**:
 ## Step 1: BLE Controller Initialization (Hardware Layer)
 
 1. **Define the Controller Blueprint**:
+
+```c
+ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
+```
+
+- BLE-only or dual-mode, default memory allocation, hardware timing.
+- At this stage, it’s only a blueprint, no hardware is configured yet.
+
 2. **Initialize Controller**:
+
+```c
+ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
+```
+
+- Allocates driver structures and programs low-level registers.
+- Prepares BLE mode, radio remains off.
+
+
 3. **Enable BLE Mode**:
+
+```c
+ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
+```
+
+- APowers on the BLE radio.
+- Activates internal clocks and timing sources.
+- Controller ready for radio-level communication
+
+
 
 ## Step 2: BLE Stack Initialization (Software Layer)
 
