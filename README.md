@@ -1,4 +1,4 @@
-# EEG Headband Firmware Setup — ADC Module Subsystem 
+# EEG Headband Firmware Setup — BLE Module Subsystem 
 
 *Development Environment*
 
@@ -15,19 +15,31 @@ This project was developed and tested using:
 > | Note: Clangd integration ensures accurate code completion, error highlighting, and faster navigation while working with ESP-IDF projects in VS Code.
 
 
-## Overview: What This ADC Module Does
+## Overview: 
 
-The ADC subsystem ( Analog-to-Digital Converter ) is responsible for translating the tiny analog EEG voltages coming from the electrodes into digital samples that the ESP32 can process in software.
+This repository contains the setup for the **WiFi / BLE Module Subsystem** on the ESP32, designed for wireless communication of EEG sensor data. 
 
-EEG signals are extremely weak — typically in the 10–100 µV range — and cannot be directly read by the ESP32.
+- **WiFi**: High-throughput communication, suitable for firmware updates and bulk data transfer.
+- **Bluetooth Low Energy (BLE)**: Low-power, short-range, event-driven communication optimized for streaming lightweight EEG signal metrics such as blink count and attention level.
 
-To make them measurable, an analog front-end amplifier (e.g. AD8232) is use  to boosts these signals into a 0–3.3 V range, which the ADC can then safely sample. 
+This project focuses on the **BLE portion** of the communication stack, turning the ESP32 into an active BLE peripheral capable of advertising, connecting, and exchanging live sensor data with external devices.
 
-Here we show how to set up the ADC subsystem for the Data Acquisition Task —once configured, the ADC subsystem becomes the foundation of continuously sampling EEG voltages and placing them into a buffer for real-time processing.
+---
 
-The setup flow can be summarized as :  
+## Subsystem Architecture
 
-> | → ADC Unit Initialization → Channel Configuration → Calibration
+The BLE setup follows a **three-layer structure**:
+
+| Layer | Description |
+|-------|-------------|
+| Controller (Hardware) | Initializes the Bluetooth radio on the ESP32 and prepares it for BLE mode. |
+| Stack (Software - Bluedroid) | Manages GAP & GATT protocols, event queues, and HCI communication with the controller. |
+| Application (GATT Server) | Defines services, characteristics, notifications, and application-specific behavior. |
+
+
+**Setup Flow**: 
+
+> | Controller Initialization → Controller Enable → Stack Initialization → Stack Enable → Application (GATT Server, Advertising, Notifications)
 
 
 **STEP 1 : ADC Unit Initialization** 
