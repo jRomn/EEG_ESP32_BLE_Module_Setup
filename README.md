@@ -394,4 +394,4 @@ eeg/                      — Root project directory
 
 > | Note :  We recommend to follow this structure since it would be easy to add unit tests in the future. 
 
-The most important parts right now are the main.c, adc.h and adc.c.
+For this repository, the most important parts are the main.c, ble.h and ble.c.
