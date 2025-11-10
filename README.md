@@ -355,7 +355,8 @@ This concludes the setup of the WiFi / BLE Module Subsystem, fully enabling the 
 ## Folder Structure
 
 For “modular implementation” here is the expected general folder structure: 
-	
+
+```c
 eeg/                      — Root project directory
 ├── .vscode/              — VS Code configs (debugging, linting, IntelliSense)
 ├── components/
@@ -387,7 +388,7 @@ eeg/                      — Root project directory
 ├── CMakeLists.txt        — Top-level project (boilerplate magic)
 ├── pytest_unittest.py    — Test runner (optional)
 └── README.md             — This documentation (expanded!)
-
+```
 
 	
 
