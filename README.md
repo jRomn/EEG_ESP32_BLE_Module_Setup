@@ -57,6 +57,18 @@ The BLE setup follows a **three-layer structure**:
 2. **Enable Bluedroid Stack**:
 
 
+## Step 3: GATT Server Registration (Application Layer)
+
+1. **Register Event Handlers:**:
+2. **Register Application Instance**:
+3. **Start Advertising**:
+
+
+## Step 4: BLE Notifications (Live Data Exchange)
+
+
+
+
 
 
 
