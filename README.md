@@ -66,9 +66,11 @@ The BT_CONTROLLER_INIT_CONFIG_DEFAULT() macro populates this structure with reco
 - BLE-only or dual-mode, default memory allocation, hardware timing.
 - At this stage, it’s only a blueprint, no hardware is configured yet.
 
--> | Note : At this point, the structure is only a blueprint—no HW is yet configured.
+> | Note : At this point, the structure is only a blueprint—no HW is yet configured.
 
 2. **Initialize Controller**:
+
+This command takes the configuration blueprint and translates it into a fully initialized controller object : 
 
 ```c
 ret = esp_bt_controller_init(&bt_cfg);
@@ -77,6 +79,7 @@ ret = esp_bt_controller_init(&bt_cfg);
 - Allocates driver structures and programs low-level registers.
 - Prepares BLE mode, radio remains off.
 
+> | Note :  At this point we have taken our blueprint and turned it into an operational Controller driver object, but the radio itself remains off.
 
 3. **Enable BLE Mode**:
 
@@ -84,15 +87,25 @@ ret = esp_bt_controller_init(&bt_cfg);
 ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
 ```
 
-- Powers on the BLE radio.
+This powers on the BLE radio and transitions it from an idle configuration to an operational state :
+
 - Activates internal clocks and timing sources.
-- Controller ready for radio-level communication
+- Makes the controller fully ready for data transmission.
+
+> | Note :  From this point on the controller ( hardware layer ) is alive and capable of radio-level communication. 
 
 
 
 ## Step 2: BLE Stack Initialization (Software Layer)
 
+The **Bluedroid Stack** is the software brain that runs above the hardware controller.
+It manages the higher-level Bluetooth protocols such as **GAP (Generic Access Profile)** and **GATT ( Generic Attribute Profile )**, which define how the ESP32 identifies itself, establishes connections, and exchanges data with external BLE devices such as smartphones or computers. 
+
+In this phase, we are initializing the host stack ( **Bluedroid** ) that interacts with the controller through the HCI ( Host Controller Interface ). 
+
 1. **Initialize Bluedroid Stack**:
+
+Set up in memory the definition of the software environment that will manage the BLE controller : 
 
 ```c
 ret = esp_bluedroid_init();
@@ -101,15 +114,22 @@ ret = esp_bluedroid_init();
 - Allocates memory for GAP, GATT, L2CAP, SMP layers.
 - Prepares event queues and callback structures.
 
+>  At this point, the “firmware ( OS ) ” of the Bluetooth brain exists structured in memory, but remains idle—it has not yet begun processing events.
+
 2. **Enable Bluedroid Stack**:
+
+This brings the software stack to life — launching its internal tasks and linking it to the controller hardware through the ( HCI ) .
 
 ```c
 ret = esp_bluedroid_enable();
 ```
 
-- Links the software stack to the hardware controller via HCI.
-- Starts internal tasks for real-time BLE event handling.
+Basically, this step turns the static “firmware image” in RAM into a running system.
 
+- Links the Bluedroid software with the hardware controller through Host Controller Interface ( HCI )..
+- Begins real-time event handling between layers
+
+> | From this point on, the controller ( hardware layer ) and software ( Bluedroid stack ) are fully synchronized and ready to support BLE operations ( GATT services, advertising, and connections ). 
 
 ## Step 3: GATT Server Registration (Application Layer)
 Source File:
