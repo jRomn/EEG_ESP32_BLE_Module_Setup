@@ -50,7 +50,7 @@ The BLE setup follows a **three-layer structure**:
 1. **Define the Controller Blueprint**:
 
 ```c
-ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
+esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
 ```
 
 - BLE-only or dual-mode, default memory allocation, hardware timing.
@@ -59,7 +59,7 @@ ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
 2. **Initialize Controller**:
 
 ```c
-ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
+ret = esp_bt_controller_init(&bt_cfg);
 ```
 
 - Allocates driver structures and programs low-level registers.
@@ -72,7 +72,7 @@ ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
 ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
 ```
 
-- APowers on the BLE radio.
+- Powers on the BLE radio.
 - Activates internal clocks and timing sources.
 - Controller ready for radio-level communication
 
@@ -81,7 +81,22 @@ ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
 ## Step 2: BLE Stack Initialization (Software Layer)
 
 1. **Initialize Bluedroid Stack**:
+
+```c
+ret = esp_bt_controller_init(&bt_cfg);
+```
+
+- Allocates memory for GAP, GATT, L2CAP, SMP layers.
+- Prepares event queues and callback structures.
+
 2. **Enable Bluedroid Stack**:
+
+```c
+ret = esp_bluedroid_enable();
+```
+
+- Links the software stack to the hardware controller via HCI.
+- Starts internal tasks for real-time BLE event handling.
 
 
 ## Step 3: GATT Server Registration (Application Layer)
