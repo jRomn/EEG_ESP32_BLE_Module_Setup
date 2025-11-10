@@ -19,6 +19,8 @@ This project was developed and tested using:
 
 This repository contains the setup for the **WiFi / BLE Module Subsystem** on the ESP32, designed for wireless communication of EEG sensor data. 
 
+While WiFi supports high-throughput communication ( useful for firmware updates or bulk data transfers ), **Bluetooth Low Energy ( BLE )** is optimized for low-power, short-range, event-based communication—perfect for streaming lightweight sensor data such as EEG signal statistics or device telemetry
+
 - **WiFi**: High-throughput communication, suitable for firmware updates and bulk data transfer.
 - **Bluetooth Low Energy (BLE)**: Low-power, short-range, event-driven communication optimized for streaming lightweight EEG signal metrics such as blink count and attention level.
 
@@ -47,14 +49,24 @@ The BLE setup follows a **three-layer structure**:
 
 ## Step 1: BLE Controller Initialization (Hardware Layer)
 
+At this stage, we are working at the lowest level of the Bluetooth system — the controller layer. This corresponds to the physical radio hardware inside the ESP32. 
+
+The process is analogous to powering up and configuring a dedicated Bluetooth radio chip, except this one is integrated into the ESP32 SoC.
+
 1. **Define the Controller Blueprint**:
+
+The first step is to define a configuration structure ( esp_bt_controller_config_t ) that “describes how the Bluetooth controller should operate”. 
 
 ```c
 esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
 ```
 
+The BT_CONTROLLER_INIT_CONFIG_DEFAULT() macro populates this structure with recommended defaults :
+
 - BLE-only or dual-mode, default memory allocation, hardware timing.
 - At this stage, it’s only a blueprint, no hardware is configured yet.
+
+-> | Note : At this point, the structure is only a blueprint—no HW is yet configured.
 
 2. **Initialize Controller**:
 
