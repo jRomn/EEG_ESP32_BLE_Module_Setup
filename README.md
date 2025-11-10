@@ -51,6 +51,12 @@ The BLE setup follows a **three-layer structure**:
 2. **Initialize Controller**:
 3. **Enable BLE Mode**:
 
+## Step 2: BLE Stack Initialization (Software Layer)
+
+1. **Initialize Bluedroid Stack**:
+2. **Enable Bluedroid Stack**:
+
+
 
 
 
