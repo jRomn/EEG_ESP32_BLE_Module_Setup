@@ -132,42 +132,79 @@ Basically, this step turns the static “firmware image” in RAM into a running
 > | From this point on, the controller ( hardware layer ) and software ( Bluedroid stack ) are fully synchronized and ready to support BLE operations ( GATT services, advertising, and connections ). 
 
 ## Step 3: GATT Server Registration (Application Layer)
+
+Once both the Controller ( hardware ) and the Bluedroid Stack ( software ) are initialized and enabled, the BLE subsystem is alive but functionally blank — it has no personality yet : it doesn’t advertise, expose data, or respond to clients.
+
+Here you will define those properties. You will define what your ESP32 is in the BLE world — i.e., the services it offers, the data it exposes, and how it reacts to connected clients.
+
 Source File:
 1. **Register Event Handlers:**:
+
+Before defining any services or characteristics, we must tell the Bluedroid Stack ( software layer ) which are the functions for the application layer to handle Bluetooth events. 
+
+This is done by registering callback functions : 
 
 ```c
 esp_ble_gap_register_callback(gap_event_handler);
 esp_ble_gatts_register_callback(gatts_event_handler);
 ```
 
-- GAP: Advertising, pairing, discovery.
-- GATT: Service creation, read/write requests, notifications.
+- GAP ( Generic Access Profile ) handles connection-level events — advertising, discovery, pairing, and connection state changes.
+- GATT ( Generic Attribute Profile ) handles data-level events — service creation, characteristic read/write requests, notifications, and indications.
+
+> | Note : Those two callback functions should be defined already in your ble.c source file. See Appendix C for more details. 
 
 2. **Register Application Instance**:
+
+This allows Bluedroid to route events and service operations to the correct application context.
 
 ```c
 ret = esp_ble_gatts_app_register(0);
 ```
 
-- Assigns a unique Application ID (0).
-- Prepares internal resources for the GATT application.
+This command assigns your firmware an Application ID ( 0 in this case) and creates an internal record within Bluedroid that represents your GATT application.
+
+Under the hood, Bluedroid allocates internal resources to represent your application instance, setting up data structures to handle future service creation and client interactions.
+
+> | Note : At this point, the GATT application exists as an internal representation within Bluedroid — registered but not yet fully configured. 
+
+> Through the two callback functions defined earlier, Bluedroid begins an asynchronous setup sequence: it triggers events that prompt your firmware to define services, add characteristics, and configure advertising parameters.
+
+> This callback mechanism forms the communication bridge between the Bluedroid Stack (software layer) and your application logic (firmware layer), ensuring that all GATT-related structures and behaviors are established dynamically during initialization. 
 
 
 5. **Start Advertising**:
+
+The advertising activation step is handled within the gatts_event_handler() under the ESP_GATTS_START_EVT case. 
 
 ```c
 esp_ble_gap_start_advertising(&adv_params);
 ```
 
-- ESP32 becomes a fully active BLE peripheral.
-- Capable of broadcasting, accepting connections, and exchanging data.
+At this point, the internal asynchronous chain of GATT setup events has completed — meaning the service is created, characteristics are added, and the GATT database is finalized.
 
+Once this call executes, the ESP32 transitions into a fully active BLE peripheral state, capable of :
+
+- Broadcast identification packets ( device name, UUIDs ).
+- Accept incoming connections ( e.g., phone, tablets  ).
+- Exchange data through the GATT operations defined earlier — such as characteristic reads, writes, and notifications. 
 
 
 ## Step 4: BLE Notifications (Live Data Exchange)
 
+The **BLE notification phase** represents the **live data exchange** between your ESP32 ( acting as the **GATT server** ) and a connected Central device ( Client ).
 
+Once the GATT service has been started and advertising is active, you can begin transmitting dynamic data updates — such as sensor readings ( blink_count ) or computed metrics ( attention_level ) — through notifications or indications.
 
+In this implementation, the notification logic resides in a dedicated **FreeRTOS task**, launched from main.c :
+
+```c
+// --- Task for BLE Advertising & Notifications ---
+task_status = xTaskCreate(ble_notifications, "BLE Notifications", 4096, NULL, 3, NULL);
+if (task_status != pdPASS){
+    ESP_LOGE(BLE_TAG, "Failed to create BLE task!");
+}
+```
 
 
 
