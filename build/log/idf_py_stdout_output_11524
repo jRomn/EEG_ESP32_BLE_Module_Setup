@@ -1,0 +1,172 @@
+Command: C:\Users\tmpor\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe C:\Users\tmpor\esp\v5.5.1\esp-idf\tools/idf_monitor.py -p COM9 -b 115200 --toolchain-prefix xtensa-esp32-elf- --target esp32 --revision 0 C:\Users\tmpor\Documents\Embedded_Systems_Projects\EEG_ESP32_BLE_Module_Setup\build\EEG_ESP32_BLE_Module_Setup.elf C:\Users\tmpor\Documents\Embedded_Systems_Projects\EEG_ESP32_BLE_Module_Setup\build\bootloader\bootloader.elf --force-color -m 'C:\Users\tmpor\.espressif\python_env\idf5.5_py3.11_env\Scripts\python.exe' 'C:\Users\tmpor\esp\v5.5.1\esp-idf\tools\idf.py'
+ets Jul 29 2019 12:2�ets Jul 29 2019 12:21:46
+
+rst:0x1 (POWERON_RESET),boot:0x13 (SPI_FAST_FLASH_BOOT)
+configsip: 0, SPIWP:0xee
+clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+mode:DIO, clock div:2
+load:0x3fff0030,len:6380
+ho 0 tail 12 room 4
+load:0x40078000,len:15916
+load:0x40080400,len:3860
+entry 0x40080638
+[0;32mI (29) boot: ESP-IDF v5.5.1 2nd stage bootloader[0m
+[0;32mI (29) boot: compile time Nov 10 2025 08:34:01[0m
+[0;32mI (29) boot: Multicore bootloader[0m
+[0;32mI (31) boot: chip revision: v3.1[0m
+[0;32mI (33) boot.esp32: SPI Speed      : 40MHz[0m
+[0;32mI (37) boot.esp32: SPI Mode       : DIO[0m
+[0;32mI (41) boot.esp32: SPI Flash Size : 2MB[0m
+[0;32mI (44) boot: Enabling RNG early entropy source...[0m
+[0;32mI (49) boot: Partition Table:[0m
+[0;32mI (51) boot: ## Label            Usage          Type ST Offset   Length[0m
+[0;32mI (58) boot:  0 nvs              WiFi data        01 02 00009000 00006000[0m
+[0;32mI (64) boot:  1 phy_init         RF data          01 01 0000f000 00001000[0m
+[0;32mI (71) boot:  2 factory          factory app      00 00 00010000 00100000[0m
+[0;32mI (77) boot: End of partition table[0m
+[0;32mI (81) esp_image: segment 0: paddr=00010020 vaddr=3f400020 size=1de8ch (122508) map[0m
+[0;32mI (130) esp_image: segment 1: paddr=0002deb4 vaddr=3ffbdb60 size=02164h (  8548) load[0m
+[0;32mI (133) esp_image: segment 2: paddr=00030020 vaddr=400d0020 size=74e4ch (478796) map[0m
+[0;32mI (297) esp_image: segment 3: paddr=000a4e74 vaddr=3ffbfcc4 size=02728h ( 10024) load[0m
+[0;32mI (301) esp_image: segment 4: paddr=000a75a4 vaddr=40080000 size=179fch ( 96764) load[0m
+[0;32mI (339) esp_image: segment 5: paddr=000befa8 vaddr=50000000 size=00020h (    32) load[0m
+[0;32mI (351) boot: Loaded app from partition at offset 0x10000[0m
+[0;32mI (351) boot: Disabling RNG early entropy source...[0m
+[0;32mI (362) cpu_start: Multicore app[0m
+[0;32mI (370) cpu_start: Pro cpu start user code[0m
+[0;32mI (370) cpu_start: cpu freq: 160000000 Hz[0m
+[0;32mI (370) app_init: Application information:[0m
+[0;32mI (370) app_init: Project name:     EEG_ESP32_BLE_Module_Setup[0m
+[0;32mI (376) app_init: App version:      1[0m
+[0;32mI (379) app_init: Compile time:     Nov 10 2025 08:33:26[0m
+[0;32mI (384) app_init: ELF file SHA256:  8b18e5659...[0m
+[0;32mI (389) app_init: ESP-IDF:          v5.5.1[0m
+[0;32mI (392) efuse_init: Min chip rev:     v0.0[0m
+[0;32mI (396) efuse_init: Max chip rev:     v3.99 [0m
+[0;32mI (400) efuse_init: Chip rev:         v3.1[0m
+[0;32mI (404) heap_init: Initializing. RAM available for dynamic allocation:[0m
+[0;32mI (410) heap_init: At 3FFAFF10 len 000000F0 (0 KiB): DRAM[0m
+[0;32mI (415) heap_init: At 3FFB6388 len 00001C78 (7 KiB): DRAM[0m
+[0;32mI (420) heap_init: At 3FFB9A20 len 00004108 (16 KiB): DRAM[0m
+[0;32mI (426) heap_init: At 3FFC6D60 len 000192A0 (100 KiB): DRAM[0m
+[0;32mI (431) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+[0;32mI (436) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+[0;32mI (442) heap_init: At 400979FC len 00008604 (33 KiB): IRAM[0m
+[0;32mI (449) spi_flash: detected chip: generic[0m
+[0;32mI (451) spi_flash: flash io: dio[0m
+[0;33mW (454) spi_flash: Detected size(4096k) larger than the size in the binary image header(2048k). Using the size in the binary image header.[0m
+[0;32mI (467) coexist: coex firmware version: b0bcc39[0m
+[0;32mI (471) main_task: Started on CPU0[0m
+[0;32mI (481) main_task: Calling app_main()[0m
+[0;32mI (481) ADC: Starting ADC Initialization and Calibration...[0m
+[0;32mI (481) ADC: ADC Unit initialized successfully![0m
+[0;32mI (481) ADC: ADC channel configured successfully![0m
+[0;32mI (481) ADC: ADC calibration ready.[0m
+[0;32mI (491) ADC: ADC is now initialized and ready for sampling.[0m
+[0;32mI (511) BLE_APP: NVS Flash initialized successfully.[0m
+[0;32mI (511) BTDM_INIT: BT controller compile version [722c907][0m
+[0;32mI (511) BTDM_INIT: Using main XTAL as clock source[0m
+[0;32mI (511) BTDM_INIT: Bluetooth MAC: f4:65:0b:b6:8f:a2[0m
+[0;32mI (521) BLE_APP: Bluetooth controller initialized successfully.[0m
+[0;32mI (521) phy_init: phy_version 4861,b71b5ad,Aug  5 2025,11:16:06[0m
+[0;32mI (601) phy_init: Saving new calibration data due to checksum failure or outdated calibration data, mode(0)[0m
+[0;32mI (851) BLE_APP: Bluetooth controller BLE mode enabled.[0m
+[0;32mI (861) BLE_APP: Bluedroid stack initialized successfully.[0m
+[0;32mI (921) BLE_APP: Bluedroid stack enabled.[0m
+[0;32mI (921) BLE_APP: [GATT EVENT] GATT server registered.[0m
+[0;32mI (921) BLE_APP: [GATT EVENT] Service created.[0m
+[0;32mI (921) BLE_APP: Blink char handle: 0x002a[0m
+[0;32mI (931) BLE_APP: Attention char handle: 0x002c[0m
+[0;32mI (931) BLE_APP: Service started. Now starting advertising.[0m
+[0;32mI (941) BLE_APP: GATT server registered successfully.[0m
+[0;32mI (941) BLE_APP: BLE initialized successfully![0m
+[0;32mI (951) ADC: ADC sampling task started![0m
+[0;32mI (951) BLE_APP: Advertising started successfully.[0m
+[0;32mI (951) ADC: ADC Sampling task created successfully![0m
+[0;32mI (961) ADC: ADC filtering task started![0m
+[0;32mI (961) ADC: ADC Filtering task created successfully![0m
+[0;32mI (971) main_task: Returned from app_main()[0m
+[0;32mI (1241) ADC: Blink detected! Count: 1[0m
+[0;32mI (1451) ADC: Attention level: 29[0m
+[0;32mI (1481) ADC: Blink detected! Count: 2[0m
+[0;32mI (1681) ADC: Blink detected! Count: 3[0m
+[0;32mI (1881) ADC: Blink detected! Count: 4[0m
+[0;32mI (1951) ADC: Attention level: 30[0m
+[0;32mI (2121) ADC: Blink detected! Count: 5[0m
+[0;32mI (2321) ADC: Blink detected! Count: 6[0m
+[0;32mI (2451) ADC: Attention level: 30[0m
+[0;32mI (2541) ADC: Blink detected! Count: 7[0m
+[0;32mI (2761) ADC: Blink detected! Count: 8[0m
+[0;32mI (2951) ADC: Attention level: 37[0m
+[0;32mI (3011) ADC: Blink detected! Count: 9[0m
+[0;32mI (3231) ADC: Blink detected! Count: 10[0m
+[0;32mI (3431) ADC: Blink detected! Count: 11[0m
+[0;32mI (3451) ADC: Attention level: 36[0m
+[0;32mI (3731) ADC: Blink detected! Count: 12[0m
+[0;32mI (3951) ADC: Attention level: 100[0m
+[0;32mI (3991) ADC: Blink detected! Count: 13[0m
+[0;32mI (4191) ADC: Blink detected! Count: 14[0m
+[0;32mI (4401) ADC: Blink detected! Count: 15[0m
+[0;32mI (4451) ADC: Attention level: 100[0m
+[0;32mI (4671) ADC: Blink detected! Count: 16[0m
+[0;32mI (4901) ADC: Blink detected! Count: 17[0m
+[0;32mI (4951) ADC: Attention level: 100[0m
+[0;32mI (5121) ADC: Blink detected! Count: 18[0m
+[0;32mI (5321) ADC: Blink detected! Count: 19[0m
+[0;32mI (5451) ADC: Attention level: 100[0m
+[0;32mI (5551) ADC: Blink detected! Count: 20[0m
+[0;32mI (5851) ADC: Blink detected! Count: 21[0m
+[0;32mI (5951) ADC: Attention level: 100[0m
+[0;32mI (6091) ADC: Blink detected! Count: 22[0m
+[0;32mI (6331) ADC: Blink detected! Count: 23[0m
+[0;32mI (6451) ADC: Attention level: 100[0m
+[0;32mI (6561) ADC: Blink detected! Count: 24[0m
+[0;32mI (6911) ADC: Blink detected! Count: 25[0m
+[0;32mI (6951) ADC: Attention level: 100[0m
+[0;32mI (7161) ADC: Blink detected! Count: 26[0m
+[0;32mI (7431) ADC: Blink detected! Count: 27[0m
+[0;32mI (7451) ADC: Attention level: 100[0m
+[0;32mI (7651) ADC: Blink detected! Count: 28[0m
+[0;32mI (7861) ADC: Blink detected! Count: 29[0m
+[0;32mI (7951) ADC: Attention level: 100[0m
+[0;32mI (8151) ADC: Blink detected! Count: 30[0m
+[0;32mI (8351) ADC: Blink detected! Count: 31[0m
+[0;32mI (8451) ADC: Attention level: 100[0m
+[0;32mI (8571) ADC: Blink detected! Count: 32[0m
+[0;32mI (8791) ADC: Blink detected! Count: 33[0m
+[0;32mI (8951) ADC: Attention level: 100[0m
+[0;32mI (9121) ADC: Blink detected! Count: 34[0m
+[0;32mI (9381) ADC: Blink detected! Count: 35[0m
+[0;32mI (9451) ADC: Attention level: 100[0m
+[0;32mI (9641) ADC: Blink detected! Count: 36[0m
+[0;32mI (9901) ADC: Blink detected! Count: 37[0m
+[0;32mI (9951) ADC: Attention level: 100[0m
+[0;32mI (10261) ADC: Blink detected! Count: 38[0m
+[0;32mI (10451) ADC: Attention level: 100[0m
+[0;32mI (10461) ADC: Blink detected! Count: 39[0m
+[0;32mI (10661) ADC: Blink detected! Count: 40[0m
+[0;32mI (10951) ADC: Attention level: 100[0m
+[0;32mI (10961) ADC: Blink detected! Count: 41[0m
+[0;32mI (11181) ADC: Blink detected! Count: 42[0m
+[0;32mI (11451) ADC: Attention level: 100[0m
+[0;32mI (11501) ADC: Blink detected! Count: 43[0m
+[0;32mI (11771) ADC: Blink detected! Count: 44[0m
+[0;32mI (11951) ADC: Attention level: 100[0m
+[0;32mI (12141) ADC: Blink detected! Count: 45[0m
+[0;32mI (12401) ADC: Blink detected! Count: 46[0m
+[0;32mI (12451) ADC: Attention level: 100[0m
+[0;32mI (12621) ADC: Blink detected! Count: 47[0m
+[0;32mI (12861) ADC: Blink detected! Count: 48[0m
+[0;32mI (12951) ADC: Attention level: 100[0m
+[0;32mI (13231) ADC: Blink detected! Count: 49[0m
+[0;32mI (13431) ADC: Blink detected! Count: 50[0m
+[0;32mI (13451) ADC: Attention level: 100[0m
+[0;32mI (13661) ADC: Blink detected! Count: 51[0m
+[0;32mI (13861) ADC: Blink detected! Count: 52[0m
+[0;32mI (13951) ADC: Attention level: 100[0m
+[0;32mI (14111) ADC: Blink detected! Count: 53[0m
+[0;32mI (14331) ADC: Blink detected! Count: 54[0m
+[0;32mI (14451) ADC: Attention level: 100[0m
+[0;32mI (14601) ADC: Blink detected! Count: 55[0m
+[0;32mI (14801) ADC: Blink detected! Count: 56[0m
+[0;32mI (14951) ADC: Attention level: 100[0m
