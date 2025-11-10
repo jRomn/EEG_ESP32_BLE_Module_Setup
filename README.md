@@ -42,51 +42,34 @@ The BLE setup follows a **three-layer structure**:
 > | Controller Initialization → Controller Enable → Stack Initialization → Stack Enable → Application (GATT Server, Advertising, Notifications)
 
 
-**STEP 1 : ADC Unit Initialization** 
 
-*Declare what is called a Handles :*
+---
 
-Handles are like references ( essentially a "pointer” ) that will later point to software objects ( blueprints ) of the ADC hardware and/or calibration engine inside ESP-IDF.
+## Step 1: BLE Controller Initialization (Hardware Layer)
 
-Think of these handles as “remote controls” that allow firmware to communicate with the ADC hardware through an abstraction layer.
-```c	
-extern adc_oneshot_unit_handle_t adc_handle;  // ADC driver handle
-extern adc_cali_handle_t adc_cali_handle;  // ADC Calibration handle
-```	
-	
-This handle is Global, meaning it can be used for all future ADC calls.
+1. **Define the Controller Blueprint**:
+   
+```c
+esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
 
-> | Note :  At this point, adc_handle is just a NULL pointer.
+* Sets BLE mode, memory allocation, and hardware timing.
+* At this point, it’s only a configuration blueprint.
 
-
-*Define the ADC Unit configuration structure :*
-
-Here we describe which ADC hardware block (ADC1 or ADC2) we want to use and any global settings associated with it.
+2. **Initialize the Controller**:
 
 ```c
-adc_oneshot_unit_init_cfg_t init_config = {
-    .unit_id = ADC_UNIT,   // Use ADC1 block
-};
-```
+ret = esp_bt_controller_init(&bt_cfg);
 
-> | Note :  This structure doesn’t actually configure hardware yet — it’s just a blueprint that describes our intended setup.
+* Allocates memory for driver structures.
+* Programs low-level registers.
+* Prepares BLE mode (radio remains off).
 
-*Initialize the ADC Unit using ESP-IDF API :*
+3. **Enable BLE Mode**:
 
-```c
-ret = adc_oneshot_new_unit(&init_config, &adc_handle);
-```
 
-By “initialize” we mean : 
+* Sets BLE mode, memory allocation, and hardware timing.
 
-- Allocates memory for the ADC driver object we have just created.
-
-- Programs ADC hardware registers according to init_config
-
-- And most importantly, updates adc_handle to point to this driver object. 
-
-- At this point we have taken our blueprint and turned it into an operational ADC driver object. 
-
+* At this point, it’s only a configuration blueprint.
 
 **STEP 2 : Channel Configuration**
 
