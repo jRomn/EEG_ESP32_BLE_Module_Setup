@@ -49,6 +49,9 @@ The BLE setup follows a **three-layer structure**:
 
 ## Step 1: BLE Controller Initialization (Hardware Layer)
 
+**Source File**: [`ble.c`]  
+**Task Launch** : N/A
+
 At this stage, we are working at the lowest level of the Bluetooth system — the controller layer. This corresponds to the physical radio hardware inside the ESP32. 
 
 The process is analogous to powering up and configuring a dedicated Bluetooth radio chip, except this one is integrated into the ESP32 SoC.
@@ -98,6 +101,9 @@ This powers on the BLE radio and transitions it from an idle configuration to an
 
 ## Step 2: BLE Stack Initialization (Software Layer)
 
+**Source File**: [`ble.c`]  
+**Task Launch** : N/A
+
 The **Bluedroid Stack** is the software brain that runs above the hardware controller.
 It manages the higher-level Bluetooth protocols such as **GAP (Generic Access Profile)** and **GATT ( Generic Attribute Profile )**, which define how the ESP32 identifies itself, establishes connections, and exchanges data with external BLE devices such as smartphones or computers. 
 
@@ -132,6 +138,9 @@ Basically, this step turns the static “firmware image” in RAM into a running
 > | From this point on, the controller ( hardware layer ) and software ( Bluedroid stack ) are fully synchronized and ready to support BLE operations ( GATT services, advertising, and connections ). 
 
 ## Step 3: GATT Server Registration (Application Layer)
+
+**Source File**: [`ble.c`]  
+**Task Launch** : N/A
 
 Once both the Controller ( hardware ) and the Bluedroid Stack ( software ) are initialized and enabled, the BLE subsystem is alive but functionally blank — it has no personality yet : it doesn’t advertise, expose data, or respond to clients.
 
@@ -173,7 +182,7 @@ Under the hood, Bluedroid allocates internal resources to represent your applica
 > This callback mechanism forms the communication bridge between the Bluedroid Stack (software layer) and your application logic (firmware layer), ensuring that all GATT-related structures and behaviors are established dynamically during initialization. 
 
 
-5. **Start Advertising**:
+3. **Start Advertising**:
 
 The advertising activation step is handled within the gatts_event_handler() under the ESP_GATTS_START_EVT case. 
 
@@ -192,6 +201,9 @@ Once this call executes, the ESP32 transitions into a fully active BLE periphera
 
 ## Step 4: BLE Notifications (Live Data Exchange)
 
+**Source File**: [`ble.c`](components/ble/ble.c)  
+**Task Launch** (from `main.c`):
+
 The **BLE notification phase** represents the **live data exchange** between your ESP32 ( acting as the **GATT server** ) and a connected Central device ( Client ).
 
 Once the GATT service has been started and advertising is active, you can begin transmitting dynamic data updates — such as sensor readings ( blink_count ) or computed metrics ( attention_level ) — through notifications or indications.
@@ -206,12 +218,57 @@ if (task_status != pdPASS){
 }
 ```
 
+For this to work you will need to implement the following sequence :
+
+1. **Connection & Handle Validation**
+
+Validate that a valid BLE connection exists ( conn_id != 0xFFFF ) and the characteristic handles for Blink Count and Attention Level are available. 
+
+```c
+while (1) {
 
 
+    // Only if Connected + handles ready
+    if (conn_id != 0xFFFF && blink_handle && attention_handle) {         
+    }
+    vTaskDelay(pdMS_TO_TICKS(250));  // 1s delay
 
 
+}
+```
 
 
+2. **Sent Blink Count Notification / Attention Level Notification**
+
+Once the Blink Count or Attention Level changes, transmit the updated values using  esp_ble_gatts_send_indicate( ). 
+
+Each characteristic is sent independently, only when its value differs from the previous one.
+
+```c
+// Example: Notify Blink Count
+esp_ble_gatts_send_indicate(gatts_if_global, conn_id, blink_handle, sizeof(blink_data), blink_data, false);
+
+
+// Example: Notify Attention Level
+esp_ble_gatts_send_indicate(gatts_if_global, conn_id, attention_handle, sizeof(attn_data), attn_data, false);
+```
+
+> | Note : Each payload is packed in little-endian format, matching BLE GATT conventions.
+
+3. Periodic Task Delay
+
+The notification task runs periodically to avoid flooding the BLE connection:
+
+```c
+vTaskDelay(pdMS_TO_TICKS(250)); // 250 ms delay between notifications
+```
+
+- This maintains a smooth and consistent update rate (~4 updates/sec).
+- Ensures real-time streaming of blink count and attention metrics without overloading the BLE stack.
+  
+At this stage, the GATT service is active, the client is connected, and your BLE peripheral is sending periodic notifications representing live application data — formatted in the correct GATT-compliant little-endian layout.
+
+This concludes the setup of the WiFi / BLE Module Subsystem, fully enabling the ESP32 as a functioning BLE peripheral that can broadcast, connect, and exchange live sensor data with external devices.
 
 
  
@@ -271,7 +328,25 @@ if (task_status != pdPASS){
         ┌────────────────────────┐
         │ Signal Processing       │
         │ Module (Filtering, FFT) │
+        └──────────┬─────────────┘
+                   │ Processed EEG metrics
+                   ▼
+        ┌────────────────────────┐
+        │ BLE Notification Task   │
+        │ - FreeRTOS Task         │
+        │ - Sends Blink Count     │
+        │   & Attention Level     │
+        │   via GATT Notifications│
+        └──────────┬─────────────┘
+                   │ BLE Peripheral
+                   ▼
+        ┌────────────────────────┐
+        │ External BLE Client     │
+        │ (Phone, Tablet, PC)    │
+        │ - Receives live EEG     │
+        │   metrics               │
         └────────────────────────┘
+
 ```
 
 ----------------------------------------------------------------------------------------------------
@@ -281,29 +356,38 @@ if (task_status != pdPASS){
 
 For “modular implementation” here is the expected general folder structure: 
 	
-	eeg/          — Root project directory
-	├── .vscode/            — VS Code configs (for debugging bliss)
-	├── components/
-	│   └── adc/            — Our ADC module (reusable, testable)
-	│       ├── include/
-	│       │   └── adc.h   — Declarations, configs, globals
-	│       ├── adc.c       — Implementations (init, future tasks/filters)
-	│       ├── CMakeLists.txt — Builds the component
-	│       └── test/       — Unit tests (mock ADC for filter validation)
-	│           ├── CMakeLists.txt
-	│           └── test_adc.c
-	├── main/
-	│   ├── main.c          — App entry (init everything, create tasks)
-	│   └── CMakeLists.txt  — Main component build
-	├── test/               — Full-system tests
-	│   ├── CMakeLists.txt
-	│   ├── sdkconfig.defaults
-	│   └── main/
-	│       ├── CMakeLists.txt
-	│       └── test_main.c
-	├── CMakeLists.txt      — Top-level project (boilerplate magic)
-	├── pytest_unittest.py  — Test runner (optional)
-	└── README.md           — This doc (or expand it!)
+eeg/                      — Root project directory
+├── .vscode/              — VS Code configs (debugging, linting, IntelliSense)
+├── components/
+│   ├── adc/              — ADC module (reusable, testable)
+│   │   ├── include/
+│   │   │   └── adc.h     — Declarations, configs, globals
+│   │   ├── adc.c         — Implementations (init, tasks, filters)
+│   │   ├── CMakeLists.txt— Component build
+│   │   └── test/         — Unit tests (mock ADC for filter validation)
+│   │       ├── CMakeLists.txt
+│   │       └── test_adc.c
+│   └── ble/              — BLE module (GATT server, notifications)
+│       ├── include/
+│       │   └── ble.h     — Declarations, configs, globals
+│       ├── ble.c         — Implementations (GATT setup, notifications)
+│       ├── CMakeLists.txt— Component build
+│       └── test/         — Unit tests (mock BLE events / GATT)
+│           ├── CMakeLists.txt
+│           └── test_ble.c
+├── main/
+│   ├── main.c            — App entry (init everything, create tasks)
+│   └── CMakeLists.txt    — Main component build
+├── test/                 — Full-system tests
+│   ├── CMakeLists.txt
+│   ├── sdkconfig.defaults
+│   └── main/
+│       ├── CMakeLists.txt
+│       └── test_main.c
+├── CMakeLists.txt        — Top-level project (boilerplate magic)
+├── pytest_unittest.py    — Test runner (optional)
+└── README.md             — This documentation (expanded!)
+
 	
 
 > | Note :  We recommend to follow this structure since it would be easy to add unit tests in the future. 
