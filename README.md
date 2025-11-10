@@ -255,7 +255,7 @@ esp_ble_gatts_send_indicate(gatts_if_global, conn_id, attention_handle, sizeof(a
 
 > | Note : Each payload is packed in little-endian format, matching BLE GATT conventions.
 
-3. Periodic Task Delay
+3. **Periodic Task Delay**
 
 The notification task runs periodically to avoid flooding the BLE connection:
 
@@ -387,6 +387,7 @@ eeg/                      — Root project directory
 ├── CMakeLists.txt        — Top-level project (boilerplate magic)
 ├── pytest_unittest.py    — Test runner (optional)
 └── README.md             — This documentation (expanded!)
+
 
 	
 
