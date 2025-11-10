@@ -48,6 +48,7 @@ The BLE setup follows a **three-layer structure**:
 ## Step 1: BLE Controller Initialization (Hardware Layer)
 
 1. **Define the Controller Blueprint**:
+
 ```c
 esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
 - Sets BLE mode, memory allocation, and hardware timing.
