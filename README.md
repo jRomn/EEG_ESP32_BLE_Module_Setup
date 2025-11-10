@@ -83,7 +83,7 @@ ret = esp_bt_controller_enable(ESP_BT_MODE_BLE);
 1. **Initialize Bluedroid Stack**:
 
 ```c
-ret = esp_bt_controller_init(&bt_cfg);
+ret = esp_bluedroid_init();
 ```
 
 - Allocates memory for GAP, GATT, L2CAP, SMP layers.
@@ -100,10 +100,36 @@ ret = esp_bluedroid_enable();
 
 
 ## Step 3: GATT Server Registration (Application Layer)
-
+Source File:
 1. **Register Event Handlers:**:
+
+```c
+esp_ble_gap_register_callback(gap_event_handler);
+esp_ble_gatts_register_callback(gatts_event_handler);
+```
+
+- GAP: Advertising, pairing, discovery.
+- GATT: Service creation, read/write requests, notifications.
+
 2. **Register Application Instance**:
-3. **Start Advertising**:
+
+```c
+ret = esp_ble_gatts_app_register(0);
+```
+
+- Assigns a unique Application ID (0).
+- Prepares internal resources for the GATT application.
+
+
+5. **Start Advertising**:
+
+```c
+esp_ble_gap_start_advertising(&adv_params);
+```
+
+- ESP32 becomes a fully active BLE peripheral.
+- Capable of broadcasting, accepting connections, and exchanging data.
+
 
 
 ## Step 4: BLE Notifications (Live Data Exchange)
@@ -136,7 +162,7 @@ ret = esp_bluedroid_enable();
 
 
 
-## System Diagram — ADC Subsystem Data Flow
+## System Diagram — ADC / BLE Subsystem Data Flow
 
 ```
         ┌────────────────────────┐
